@@ -11,8 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 @Builder(builderMethodName = "newBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
-public class WxPayOrderRequest extends BaseRequest {
-
+public class MicroPayOrderRequest extends BaseRequest {
 
     /**
      * 下游订单号
@@ -26,6 +25,13 @@ public class WxPayOrderRequest extends BaseRequest {
     @Required
     String payMoney;
 
+
+    /**
+     * 消费者付款码信息
+     */
+    @Required
+    String barcode;
+
     /**
      * 商品
      */
@@ -33,16 +39,10 @@ public class WxPayOrderRequest extends BaseRequest {
     String body;
 
     /**
-     * 回调通知地址
+     * 客户自定义的收银员编号
      */
-    @Required
-    String notifyUrl;
+    String lowCashier;
 
-    /**
-     * 支付完成前端返回地址
-     */
-    @Required
-    String returnUrl;
 
     /**
      * 附加字段
@@ -50,26 +50,36 @@ public class WxPayOrderRequest extends BaseRequest {
     String attach;
 
     /**
-     * 商户自己上送appID
+     * 场景值 bar_code:扫码支付 security_code:刷脸支付
      */
-    @Required
-    String appId;
+    String scene;
 
     /**
-     * 微信用户在公众号的唯一标识
+     * 值为"Y"时，接口返回优惠信息字段
      */
-    @Required
-    String openId;
+    String extendInfo;
+
+    /**
+     * 支付方式 0：微信，1：支付宝，2：银联扫 码 6：龙支付 8 ：翼支付，H：数字货币 （若不传该参数，则呈现根据付款码自动判断付款方式）
+     */
+    String payType;
+
+
+    /**
+     * 设备参数(当刷脸支付时必传)
+     */
+    String terminalParams;
+
+    /**
+     * 单品优惠活动该字段必传，且必须按照规范上传，JSON格式，详见附录3.2
+     */
+    String detail;
+
 
     /**
      * 门店号
      */
     String storeId;
-
-    /**
-     * 值为1，表示小程序支付；值为0，表示公众号支付
-     */
-    String isMinipg;
 
     /**
      * 易宝渠道使用REAL_TIME("实时订单");
@@ -88,7 +98,7 @@ public class WxPayOrderRequest extends BaseRequest {
     String divideDetail;
 
     /**
-     * 易宝渠道使用 实时分账回告商户地址资金处理类型为： REAL_TIME_DIVIDE("实时分账")时，必填，
+     * 易宝使用实时分账回告商户地址资金处理类型为：REAL_TIME_DIVIDE("实时分账")时，必填，
      * 分账回调需要等渠道分账成功之后才会回调，一般在实时分账后半小时左右
      */
     String divideNotifyUrl;
@@ -98,20 +108,26 @@ public class WxPayOrderRequest extends BaseRequest {
      */
     String profitSharing;
 
+
     /**
-     * 下游收银员编号
+     * 支付宝场景数据
      */
-    String lowCashier;
+    String industryInfo;
 
     /**
      * 医疗场景值，医疗机构必传，其他非必传
      */
     String secenType;
 
+
     @Override
     protected void checkConstraints() throws ErrorException {
         if (StringUtils.isNotEmpty(divideDetail) && (divideDetail.equals("REAL_TIME_ DIVIDE") || divideDetail.equals("SPLIT_ACCOUNT_IN"))) {
             throw new ErrorException("资金处理类型为: REAL_TIME_ DIVIDE(\"实时分账\"), SPLIT_ACCOUNT_IN( \"实时拆分入账\")时，必填");
+        }
+
+        if (StringUtils.isNotEmpty(scene) && scene.equalsIgnoreCase("security_code")) {
+            throw new ErrorException("刷脸支付时设备参数，必填");
         }
     }
 }
