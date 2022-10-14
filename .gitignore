@@ -54,3 +54,4 @@ sonar-project.properties
 # STS
 .factorypath
 *.zip
+/tg-sdk-pay/src/test/java/com/zoeyun/tgsdk

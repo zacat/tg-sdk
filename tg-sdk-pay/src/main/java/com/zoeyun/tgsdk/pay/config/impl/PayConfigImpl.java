@@ -10,7 +10,7 @@ public class PayConfigImpl implements PayConfig, Serializable {
 
     private static final long serialVersionUID = -5234628670973234280L;
 
-    private static final String DEFAULT_PAY_BASE_URL = "https://pay.swiftpass.cn/pay/gateway";
+    private static final String DEFAULT_PAY_BASE_URL = "https://tgpay.833006.net/";
     private static final String DEFAULT_SANDBOX_PAY_BASE_URL = "https://tgpay.833006.net";
     protected volatile String mchId;
     protected volatile String mchKey;
